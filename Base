@@ -1,0 +1,83 @@
+#
+#
+#
+#
+#
+异常处理
+ 异常可以被处理的前提条件是被定义。
+异常的类型：
+1.系统异常
+  在PL/SQL运行时引擎发现某个错误而抛出的异常。如，NO_DATA_FOUND。
+2.用户定义的异常
+
+声明异常：
+procedure  cacu_annual_sales(company_id in number)
+is
+  negative_balance EXCEPTION;
+  invalid_company EXCEPTION;
+begin
+ ...
+ --在代码中抛出异常:
+ raise invalid_company;
+ raise negative_balance;
+EXCEPTION
+  when negative_balance then
+    ..
+  when invalid_company then
+    ..
+  when others then
+    ..
+end;
+
+异常名称与错误代码相关联：
+ procedure my_procedure
+ is
+  invalid_month EXCEPTION;
+  pragma EXCEPTION_init (invalid_month,-1434);
+ begin
+  ..
+ EXCEPTION
+   when invalid_month then
+    ..
+ end;
+
+ 错误代码的使用：
+ 不可以使用-1403(NO_DATA_FOUND的错误码之一)
+ 不可以使用0或100之外的任意正数
+ 不可以使用小于-1000000的负数
+
+ procedure my_procedure
+ is
+   too_young EXCEPTION;
+   pragma EXCEPTION_init(too_young,-20001);
+ begin
+   if min_year<20 then
+    raise_application_error(-20001,'Employees must be 20 years old');
+  EXCEPTION
+    when too_young then
+     ..
+ end;
+
+抛出异常的3种方法：
+1.数据库检测到异常
+2.raise
+  raise exception;
+  raise package_name.EXCEPTION;
+  raise;
+3.raise_application_error
+  与raise的区别是可以加一段消息。
+
+处理异常：
+  when others选项必须是异常处理的最后一个句柄。
+  内置的错误函数
+   SQLCODE:返回最后一次抛出的错误代码。如果没有任何错误，则返回0.
+   SQLERRM:返回错误代码对应的消息。
+   begin
+    dbms_output.put_line(SQLERR(-1403));
+   END;
+    /
+    ORA-01403:NO_DATA_FOUND
+可以在一个句柄中处理多个异常
+when invalid_month or invalid_company then
+ ..
+          
