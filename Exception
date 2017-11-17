@@ -80,4 +80,35 @@ end;
 可以在一个句柄中处理多个异常
 when invalid_month or invalid_company then
  ..
-          
+
+异常传播
+ declare 
+   v_test_var char(3):='abcde';
+ begin 
+   dbms_output.put_line(v_test_var);
+ exception
+   when value_error then
+	dbms_output.put_line('An error has occurredd');
+ end;
+ 该语句块会直接报错而不会转到异常处理部分。
+ 因为错误发生在语句块的声明部分，但是语句块并没有被其他语句块包围，执行权会转移到主机环境。
+
+begin
+  declare 
+   v_test_var char(3):='abcde';
+ begin 
+   dbms_output.put_line(v_test_var);
+ exception
+   when value_error then
+	dbms_output.put_line('An error has occurredd');
+ end;
+exception
+ when value_error then
+	dbms_output.put_line('An error has occurredd');
+end;
+
+ 该语句即可捕获到异常。
+
+
+
+
