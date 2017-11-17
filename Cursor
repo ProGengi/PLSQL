@@ -1,0 +1,39 @@
+#
+#
+#
+#
+#
+
+游标类型
+1.隐式游标
+  隐式游标被用来处理insert，update,delete,select into 语句。
+  隐式游标处理时，自动open，fetch，close。
+2.显示游标
+  主动定义的游标是显示游标
+  处理游标的过程：
+  1.声明
+    cursor cur_name is select...
+  2.打开
+    open cur_name
+  3.检索
+    fetch cur_name into record/variables
+  4.关闭
+    close cur_name
+显示游标的属性
+%notfound   cur_name%notfound 当前面的fetch没有返回数据行时，返回true，否则false。 
+%found      cur_name%found  当前面的fetch返回数据行时，返回true，否则，FALSE。
+%rowcount   cur_name%rowcount 返回游标中检索的数据行数
+%isopen     cur%isopen 当游标在打开状态下返回true，否则false。
+
+游标与for循环的使用可以不用显示提取，检索，关闭。
+for rec in (select * from emp) loop
+
+end loop;
+
+
+高级游标
+在游标中使用参数
+cursor c_zip (p_state in zipcode.state%type) is
+   select zip,city,state
+   from zipcode
+   where state = p_state;
