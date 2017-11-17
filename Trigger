@@ -1,0 +1,36 @@
+#
+#
+#
+#
+#
+
+触发器
+1.行触发器(每修改一行触发一次)
+  create or replace trigger trg_name
+  after update on course
+  for each row
+2.语句触发器(不管修改多少行数据只触发一次)
+  create or replace trigger trg_name
+  after update on curse
+3.instead of 触发器
+ 在执行操作视图的语句时，所涉及的数据变更也会相应的修改底层的数据库表。
+ 当视图包含以下结构时，则不能被update，delete，insert。
+ 1.集合操作 union minus intersect
+ 2.分组函数 AVG count
+ 3.GROUP BY
+ 4.CONNECT BY
+ 5.DISTINCT
+ 6.ROWNUM
+INSTEAD OF 触发器是在视图上建立的，是作为行触发器。
+
+create or replace trigger trg_test
+instead of delete on emp_view
+for each row 
+begin 
+ delete from emp
+ where empno=:old.empno;
+end;
+
+delete from emp_view where empno=XX;
+ 
+
