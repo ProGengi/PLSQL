@@ -61,3 +61,43 @@
     harden
     love
 3.varry
+  将varry类型作为关系表的一列。
+  sql> create type first_name is varrry(2) of varchar2(100); --在定义varry时，必须指定varry的长度
+  sql> create type last_name is varry(1) of varchar2(100);
+  sql> create table family
+       (surname varchar2(100),
+        parent_name first_name,
+        children_name last_name)
+   
+   declare 
+    parent first_name :=first_name();
+    children last_name :=last_name();
+   begin
+    parent.extend(2);
+    parent(1):='harden';
+    parent(2):='curry';
+    --假如varry只定义了2个，extend却指定3时，会报下标超过限制的错。
+    
+    children.extend;
+    children(1):='james';
+    
+    insert into family values('liber',parent,children);
+   end;
+   
+   sql>select * from family
+    liber first_name('harden','curry') last_name('james')
+    
+三种集合之间的区别
+要在数据库表中使用时，不能使用关联数组。
+关联数组时稀疏的，而嵌套表与varry是密集的。关联数组也是唯一一个可以用负数下标的集合。
+嵌套表可以使用集合操作，关联数组不可以。
+如果想要限制数组能够保存的行数，只能是varry。
+如果想保存插入的顺序可以使用varry。
+嵌套表一开始是密集的，但是因为可以删除元素，所以有可能变成稀疏的。
+嵌套表与varry需要通过构造函数初始化，而关联数组自动初始化。
+只有嵌套表可以比较两个集合是否相等。
+
+集合的方法
+
+
+
