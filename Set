@@ -33,5 +33,31 @@
    edward
   --因为该集合有索引值，索引集合结果按照索引排序。 
 2.嵌套表
+  declare 
+   type list_of_name is table of varchar2(100);
+   happyfamily list_of_name :=list_of_name(); --调用初始化函数初始化嵌套表
+   children list_of_name :=list_of_name();
+   parents list_of_name :=list_of_name();
+  begin
+   happyfamily.extend(4);--调用extend方法，请求空间，如果不加参数表明申请一行，加参数表明申请n行。
+   happyfamily(1):='harden'; --把值填充到集合中
+   happyfamily(2):='james';
+   happyfamily(3):='curry';
+   happyfamily(4):='love';
+   
+   children.extend
+   children(1):='james';
+   childten.extend
+   children(2):='curry';
+   
+   parents :=happyfamily multiset except children; --当数据库使用集合操作时，自动扩展集合空间，不必申请。
+   
+   for l_row in parents.first .. parents.last loop --对于一个紧凑的集合可以使用该方法，如果对一个稀疏的集合使用该方法会报no_data_found。
+    dbms_output.put_line(parents.(l_row));
+   end loop;
+  end;
   
+  --结果是
+    harden
+    love
 3.varry
