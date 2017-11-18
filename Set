@@ -4,4 +4,34 @@
 #
 #
 
-集合
+集合的类型
+1.关联数组
+ declare
+  type list_of_name is table of person.first_name%type index by pls_integer;
+  happyfamily list_of_name;
+  l_low pls_integer;
+ begin 
+  happyfamily(20202020):='edward';
+  happyfamily(0):='james';
+  happyfamily(-20):='harden';
+  happyfamily(234):='curry';
+  --在关联数组中下标的值是可以任意取的。
+  l_low := happyfamily.first; --调用first方法，取集合第一个值
+  
+  while(l_low is not null)
+   loop
+    dbms_output.put_line(happyfamily(l_low));
+    l_row := happyfamily.next;--调用next方法取集合下一个值，从当前有意义的行调到下一个有定义的行。
+   end loop;
+ end;
+ 
+ 
+ 输出的结果是
+   harden
+   james
+   curry
+   edward
+  --因为该集合有索引值，索引集合结果按照索引排序。 
+2.嵌套表
+  
+3.varry
