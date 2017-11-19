@@ -98,6 +98,28 @@
 只有嵌套表可以比较两个集合是否相等。
 
 集合的方法
+count 返回集合中现有的元素数量
+  把count应用于一个已经初始化的但没有任何元素的集合时，返回0.用于空的关联数组时也是返回0.但是用于没有初始化的嵌套表或者varry时会报collection_is_null异常
+delete 从集合中移除一个或者多个元素，对于varry只能删除所有元素
+  不带参数表明删除所有元素。delete(i)表明删除下标为i的元素。delete(i,j)删除下标从i到j的元素，包括i跟j。
+  当delete用于varry时，只能使用不带下标的delete也就是全部删除。因为varry始终时密集的，所以不能删除中间的元素，但是可以使用trim来删除末尾的元素。
+  当一个嵌套表只存在1,2,3但是调用delete(-5,1)时只会删除1位置的元素，不会报错。
+exists 根据某个指定的元素看是否已经存在于集合中，存在返回true
+  if name.exists('james') then
+    ..
+extend 增加嵌套表或者varry元素的个数
+  extend(n,i) 增加n个元素，每个元素的值与第i个元素的值一样。
+first,last 返回可用的最大和最小的
+   for indx in name.first..name.last loop
+      ...
+   end loop;   
+  只有紧凑的集合才能使用这方法去遍历
+limit 返回varry中允许的最大的元素数量
+prior,next 返回紧挨着指定下标之前或者之后的下标值。应该用piror和next来遍历集合，尤其是稀疏的关联数组。
+trim 从集合的尾部删除元素
+  不带参数只删除一个元素。不能对关联数组使用trim，因为它是稀疏的。如果trim的数量超过集合中实际存在的数量会报subscript_beyond_count异常。
+  
+
 
 
 
