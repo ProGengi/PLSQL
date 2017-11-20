@@ -1,0 +1,33 @@
+#
+#
+#
+#
+#
+
+1.forall
+  --该语句会从pl/sql引擎发送到sql引擎10次，会发生10次上下文切换。
+  for i in 1..10 loop
+   insert into test
+   values(..)
+  end lopp; 
+
+  --改成forall就只会产生一次上下文切换
+  forall i in 1..10 loop
+    insert into test
+    values(..)
+  end loop;
+  
+2.bulk collect
+  declare 
+   cursor student_cur is select first_name,last_name from student;
+  begin 
+   for rec in student_cur loop
+     ...
+   end loop;
+  end;
+  
+  select ...
+  bulk collect into 
+  ... --集合变量
+  from ..
+   
