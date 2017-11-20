@@ -1,0 +1,36 @@
+#
+#
+#
+#
+#
+
+动态sql是指sql是动态产生的，比如一个查询要查什么列，在编译的时才确定。
+
+v_sql:= 'select first_name,last_name from student where student_id = '|| v_student_id;
+
+处理动态sql的方法：
+1.execute immediate 处理单行
+  execute immediate 'select count(*) from emp' into v_cnt;
+  
+  不能把模式对象的名称作为绑定参数传递给动态sql语句。
+  execute immediate 'select count(*) from :table'
+  into v_cnt
+  using 'emp';
+  
+  
+2.open .. for 处理多行
+  open 游标变量 for v_sql;
+  declare 
+    type cur_student_type is ref cursor;
+    student_cur curr_student_type;
+  begin 
+    v_sql :='select * from emp';
+    open student_cur for v_sql;
+  end;
+  
+
+ 
+  
+  
+  
+  
