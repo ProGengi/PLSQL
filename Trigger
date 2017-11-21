@@ -33,4 +33,5 @@ end;
 
 delete from emp_view where empno=XX;
  
+ 
 
