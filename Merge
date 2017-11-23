@@ -3,3 +3,30 @@
 #
 #
 #
+
+使用merge实现 存在就update，不存在就insert的逻辑。
+
+基本语法：
+MERGE INTO TABLE_NAME
+USING TABLE_NAME2
+ON TABLE.ID=TABLE2.ID
+WHEN MATCHED THEN
+UPDATE/DELETE
+WHEN NOT MATCHED THEN
+INSERT;
+
+FAQ
+Q:无法在源表获得一组稳定的行(on 后面的条件出现满足多个结果的情况)用A表去更新B表，但是A表却有多行结果。如果目标表出现多行不会报错但是全部新。
+A:用主键关联。
+
+DELETE子句只能删除目标表，不能删除源表。
+
+merge into t1
+using t2
+on t1.id=t2.id
+when matched then 
+update 
+set t2.name=t1.name
+delete where T1.ID=xxxx --只会删除t1表中的数据
+
+
