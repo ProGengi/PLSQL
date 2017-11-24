@@ -1,0 +1,17 @@
+#
+#
+#
+#
+#
+
+rollup
+ select ..
+ from t 
+ group by rollup(A,B);
+ rollup(A,B)=group by A,B union group by A union group by null
+
+cube
+ select ..
+ from t
+ group by cude(A,B);
+ cube(A,B)=group by (A,B) union group by A union group by B union group by null
