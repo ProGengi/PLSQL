@@ -1,0 +1,50 @@
+#
+#
+#
+#
+#
+
+null的判断以及比较运算符
+is null / is not null
+is null 与 is '' 是不同的， 一个是null 一个是空字符串
+
+任何东西跟null比较都返回unknow(boolean值，ture false unknow)
+与null的运算都是null，无论加减乘除
+
+null相关的函数
+nvl(expr1,expr2) 
+ 如果expr1是null则用expr2作为返回值，不是null则返回expr1.
+ 如果两个参数的数据类型不一致，则会默认转换
+ 转换规则：
+  如果expr1是字符串类型，在比较前将expr2转换为字符串类型。
+  如果expr1是数值类型，会比较数值类型的优先级，binary_double>binary_float>number
+nvl2(expr1,expr2,expr3) 
+ 用于不管expr1是不是null都要转换的情况
+ 当expr1不是null时，返回expr2，否则返回expr3
+ 
+nullif(expr1,expr2) 
+ 判断两个参数是否相等，相等返回null，否则返回第一个参数。
+ 两个参数必须是相同的数据类型，不同时报错。
+ 
+coalesce(expr1,expr2,expr3,.....exprn)
+ 返回第一个不是null的参数，如果都是null则返回null
+ 所有参数的类型必须一样
+ 
+decode(expr1,expr2,expr3,
+             expr4,expr5,
+             expr6)
+ 如果expr1的值与expr2相等，则返回expr3
+ 如果expr1的值与expr4相等，则返回expr5
+ 如果都不相等，返回expr6.
+ 
+null与索引
+
+null的排序(null是最大的)
+ 升序时，null在最后
+ 降序时，null在最前
+ 
+ 
+ 
+
+
+ 
