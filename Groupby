@@ -5,13 +5,59 @@
 #
 
 rollup
+ 分组结果与顺序有关，顺序不同，结果不同。
  select ..
  from t 
  group by rollup(A,B);
  rollup(A,B)=group by A,B union group by A union group by null
 
-cube
+cube、
+ 分组结果与顺序无关。
  select ..
  from t
  group by cude(A,B);
  cube(A,B)=group by (A,B) union group by A union group by B union group by null
+
+grouping sets
+ 对单列进行分组，只统计小计。无合计，但是允许将rollup,cube作为参数grouping sets(rollup(a),cube(b))
+ select ..
+ from t
+ group bu grouping sets(A,B)
+ grouping sets (A,b)=group by a union group by b
+
+组合列分组
+ group by rollup ((a,b),c)
+ 将a与b当做整体对待。
+
+连接分组(分组级别是笛卡尔积)
+ rollup(a,b),rollup(c)
+ =group by a,b,c
+  group by a,b
+  group by a,c
+  group by a
+  group by c
+  group by null
+ 
+ rollup(a,b),grouping sets(c)
+ =group by a,b,c
+  group by a,c
+  group by c
+
+三个扩展分组函数
+  grouping(a)
+  用于处理小计中的null，只接受一个参数，且此参数来自rollup,cube,grouping sets 中的列。
+  对于是小计或者合计的列返回1，否则返回0.
+  
+  grouping_id
+  参数来自rollup,cube,grouping sets中的列。
+  按列从左到右顺序计算，如果该列是分组列，则为0，是小计或者合计则为1.
+  cube(a,b)
+  grouping_id(a,b)
+  a,b      00    0
+  a        01    1
+  b        10    2
+  null     11    3
+  
+  group_id
+  无参数。
+  用来区分重复分组，第一次出现为0，以后每次出现递增1
