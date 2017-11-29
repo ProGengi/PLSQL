@@ -18,3 +18,12 @@ connect by piror empid=managerid
 
 wmsys.wm_concat 这个函数没有被公开，在以后的版本中可能不可以用了。
 这是一个聚合函数，用来将满足条件的值以逗号分隔开的方式串联起来。
+
+
+伪列 rownum,level 都是针对结果集而言的。
+
+利用层次查询产生5~8
+select rownum+4 from dual connect by rownum<5
+select level+4 from dual connect by level<5
+
+
