@@ -1,0 +1,21 @@
+#
+#
+#
+#
+#
+
+表函数，能够产生一组输出行集合的函数。数据存放内存中。
+管道函数与表函数类似，不是一次返回所有需要的行，而是一次返回一行，尽可能的快。返回的是一个集合。
+
+create or replace function pipe_num(p_max number)
+return num_list pipelined 
+is
+begin 
+ for i in 1..p_max loop
+  pipe row(i)
+ end loop;
+return; 
+end;
+
+select * from table(pipe_num(5));
+当管道函数中有DML时，select无法调用管道函数。
