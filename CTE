@@ -1,0 +1,21 @@
+#
+#
+#
+#
+#
+
+递归with查询语法
+with 
+query_name --子查询的名称，必须把所有列都写出来
+as (subquery) --该部分就是查询语句，递归就写在这里。
+select * from ..
+
+
+
+with t(empno,ename,job)
+as
+(select empno,ename,job from emp
+ union all
+ select empno,ename,job from t ,emp e  where e.empno=t.empno
+)
+select * from t
