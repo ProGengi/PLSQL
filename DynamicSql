@@ -4,19 +4,28 @@
 #
 #
 
-动态sql是指sql是动态产生的，比如一个查询要查什么列，在编译的时才确定。
+动态sql是指sql是动态产生的，比如一个查询要查什么列，在编译的时才确定，所以不能在编译的时候检查sql语法是否正确。
+用到动态sql的场景
+ 1.执行数据定义语句(create table,truncate table等)
+ 2.利用数据字典生成执行脚本
+ 3.查询参数是由用户的输入开关控制的。
+
 
 v_sql:= 'select first_name,last_name from student where student_id = '|| v_student_id;
 
 处理动态sql的方法：
 1.execute immediate 处理单行
   execute immediate 'select count(*) from emp' into v_cnt;
-  
-  不能把模式对象的名称作为绑定参数传递给动态sql语句。
+
+绑定变量
+ 主要在动态sql中使用，为了一次解析多次执行。可以避免注入攻击。
+ 不能把模式对象的名称作为绑定参数传递给动态sql语句。
   execute immediate 'select count(*) from :table'
   into v_cnt
   using 'emp';
-  
+
+
+ 
   
 2.open .. for 处理多行
   open 游标变量 for v_sql;
