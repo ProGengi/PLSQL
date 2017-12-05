@@ -1,0 +1,26 @@
+#
+#
+#
+#
+#
+
+RegExp_Count(str,patt[,pos[,match_pa]])
+str:源字符串
+patt:可匹配的正则表达式
+pos:从第几个字符串开始匹配
+match_pa：匹配模式（
+  'i'不区分大小写；
+  'c'区分大小写；（默认）
+  'n'许可句点（.）作为通配符去匹配换行符，若省略这一参数，则句点不匹配换行符；
+  'm'将源串视作 多行即Oracle将^和$分别视作源串中任意位置任何行的开始和结束，而不是仅仅视作整个源串的开始或结束，若省略这一参数，则Oracle将源串视作一行；
+  'x'忽略空格字符，默认情况下，空格字符与自身相匹配；
+
+
+WITH t(a) AS  (SELECT '111'||CHR(10)||'111' FROM dual)
+SELECT regexp_count(a,'.{4}','1') f,            --0
+            regexp_count(a,'.{4}','1','n') a,   --1
+            regexp_count(a,'^.{3}$') b,         --0
+            regexp_count(a,'^.{3}$',1,'m') c,   --2
+            regexp_count(a,'^.{3} $',1) d,      --0
+            regexp_count(a,'^.{3} $',1,'xm') e  --2
+FROM t;
