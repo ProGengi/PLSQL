@@ -3,6 +3,26 @@
 #
 #
 #
+'^' 匹配输入字符串的开始位置，在方括号表达式中使用，此时它表示不接受该字符集合。[^a]：表示不匹配a
+'$' 匹配输入字符串的结尾位置。如果设置了 RegExp 对象的 Multiline 属性，则 $ 也匹配 '\n' 或'\r'。
+'.'  匹配除换行符 \n之外的任何单字符。
+'?' 匹配前面的子表达式零次或一次。
+'*' 匹配前面的子表达式零次或多次。
+'+' 匹配前面的子表达式一次或多次。
+'( )' 标记一个子表达式的开始和结束位置。
+'[]' 标记一个中括号表达式。
+'{m,n}' 一个精确地出现次数范围，m=<出现次数<=n，'{m}'表示出现m次，'{m,}'表示至少出现m次。
+'|' 指明两项之间的一个选择。例子'^([a-z]+|[0-9]+)$'表示所有小写字母或数字组合成的字符串。
+[[:alpha:]] 任何字母。
+[[:digit:]] 任何数字。
+[[:alnum:]] 任何字母和数字。
+[[:space:]] 任何白字符。
+[[:upper:]] 任何大写字母。
+[[:lower:]] 任何小写字母。
+[[unct:]] 任何标点符号。
+[[:xdigit:]] 任何16进制的数字，相当于[0-9a-fA-F]。
+
+
 
 RegExp_Count(str,patt[,pos[,match_pa]])
 str:源字符串
@@ -24,3 +44,61 @@ SELECT regexp_count(a,'.{4}','1') f,            --0
             regexp_count(a,'^.{3} $',1) d,      --0
             regexp_count(a,'^.{3} $',1,'xm') e  --2
 FROM t;
+
+with tmp as (
+  select 'like' as id ,'a9999' as str from dual union all
+  select 'like'       ,'a9c'          from dual union all
+  select 'like'       ,'A7007'        from dual union all
+  select 'like'       ,'123a34cc'     from dual union all
+  select 'substr'     ,'123,234,345'  from dual union all
+  select 'substr'     ,'12,34.56:78'  from dual union all
+  select 'substr'     ,'123456789'    from dual union all
+  select 'instr'      ,'192.168.0.1'  from dual union all
+  select 'replace'    ,'(020)12345678' from dual union all
+  select 'replace'    ,'001517729C28' from dual  
+)
+select str from tmp where id='like' and regexp_like(str,'A\d+','i');
+select str from tmp where id='like' and regexp_like(str, 'a\d+');
+select str from tmp where id='like' and regexp_like(str,'^a\d+');
+select str from tmp where id='like' and regexp_like(str,'^a\d+$');
+select
+  str,
+  regexp_substr(str,'[^,]+')     str,
+  regexp_substr(str,'[^,]+',1,1) str,
+  regexp_substr(str,'[^,]+',1,2) str,  -- occurrence 第几个匹配组
+  regexp_substr(str,'[^,]+',2,1) str   -- position 从第几个字符开始匹配
+from tmp
+where id='substr';
+
+select
+  str, 
+  regexp_substr(str,'\d')        str,
+  regexp_substr(str,'\d+'  ,1,1) str,
+  regexp_substr(str,'\d{2}',1,2) str,
+  regexp_substr(str,'\d{3}',2,1) str 
+from tmp      
+where id='substr';
+
+select regexp_substr('123456789','\d',1,level) str  --取出每位数字，有时这也是行转列的方式
+from dual
+connect by level<=9;
+
+select
+  str, 
+  regexp_instr(str,'\.'    ) ind ,
+  regexp_instr(str,'\.',1,2) ind ,
+  regexp_instr(str,'\.',5,2) ind
+from tmp where id='instr';
+
+select
+  regexp_instr('192.168.0.1','\.',1,level) ind ,  -- 点号. 所在的位置
+  regexp_instr('192.168.0.1','\d',1,level) ind    -- 每个数字的位置
+from dual 
+connect by level <=  9
+
+select
+  str,
+  regexp_replace(str,'020','GZ') str,
+  regexp_replace(str,'(\d{3})(\d{3})','<\2\1>') str -- 将第一、第二捕获组交换位置，用尖括号标识出来
+from tmp
+where id='replace';  
