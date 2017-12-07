@@ -1,0 +1,54 @@
+#
+#
+#
+#
+#
+
+关于expdp和impdp
+EXP和IMP是客户端工具程序，它们既可以在客户端使用，也可以在服务端使用。
+EXPDP和IMPDP是服务端的工具程序，他们只能在ORACLE服务端使用，不能在客户端使用。
+IMP只适用于EXP导出的文件，不适用于EXPDP导出文件；IMPDP只适用于EXPDP导出的文件，而不适用于EXP导出文件。
+expdp或impdp命令时，可暂不指出用户名/密码@实例名 as 身份，然后根据提示再输入，如：
+expdp schemas=scott dumpfile=expdp.dmp DIRECTORY=dpdata1;
+
+
+导出数据
+1.创建目录指针
+create directory dpdata1 as '/test/dump';
+2.给目录赋权
+grant read,write on directory dpdata1 to scott;
+3.创建目录
+mkdir /test/dump
+
+1)按用户导
+expdp scott/tiger@orcl schemas=scott dumpfile=expdp.dmp DIRECTORY=dpdata1;
+2)并行进程parallel
+expdp scott/tiger@orcl directory=dpdata1 dumpfile=scott3.dmp parallel=40 job_name=scott3
+3)按表名导
+expdp scott/tiger@orcl TABLES=emp,dept dumpfile=expdp.dmp DIRECTORY=dpdata1;
+4)按查询条件导
+expdp scott/tiger@orcl directory=dpdata1 dumpfile=expdp.dmp Tables=emp query='WHERE deptno=20';
+5)按表空间导
+expdp system/manager DIRECTORY=dpdata1 DUMPFILE=tablespace.dmp TABLESPACES=temp,example;
+6)导整个数据库
+expdp system/manager DIRECTORY=dpdata1 DUMPFILE=full.dmp FULL=y;
+
+
+还原数据
+1)导到指定用户下
+impdp scott/tiger DIRECTORY=dpdata1 DUMPFILE=expdp.dmp SCHEMAS=scott;
+2)改变表的owner
+impdp system/manager DIRECTORY=dpdata1 DUMPFILE=expdp.dmp TABLES=scott.dept REMAP_SCHEMA=scott:system;
+3)导入表空间
+impdp system/manager DIRECTORY=dpdata1 DUMPFILE=tablespace.dmp TABLESPACES=example;
+4)导入数据库
+impdb system/manager DIRECTORY=dump_dir DUMPFILE=full.dmp FULL=y;
+5)追加数据
+impdp system/manager DIRECTORY=dpdata1 DUMPFILE=expdp.dmp SCHEMAS=system TABLE_EXISTS_ACTION
+
+并行操作(PARALLEL) 
+您可以通过 PARALLEL 参数为导出使用一个以上的线程来显著地加速作业。
+每个线程创建一个单独的转储文件，因此参数 dumpfile 应当拥有和并行度一样多的项目。
+可以指定通配符作为文件名，而不是显式地输入各个文件名，例如： 
+expdp ananda/abc123 tables=CASES directory=DPDATA1 dumpfile=expCASES_%U.dmp parallel=4 job_name=Cases_Export 
+--dumpfile 参数拥有一个通配符 %U，它指示文件将按需要创建，格式将为expCASES_nn.dmp，其中nn 从 01 开始，然后按需要向上增加。 
