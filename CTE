@@ -18,4 +18,4 @@ as
  union all
  select empno,ename,job from t ,emp e  where e.empno=t.empno
 )
-select * from t
+select * from t;
