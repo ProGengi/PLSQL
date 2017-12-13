@@ -35,6 +35,7 @@ expdp system/manager DIRECTORY=dpdata1 DUMPFILE=full.dmp FULL=y;
 
 
 还原数据
+如果是导入到另一个库，需要在所导入的库上建目录
 1)导到指定用户下
 impdp scott/tiger DIRECTORY=dpdata1 DUMPFILE=expdp.dmp SCHEMAS=scott;
 2)改变表的owner
