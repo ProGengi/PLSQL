@@ -10,6 +10,7 @@ EXPDP和IMPDP是服务端的工具程序，他们只能在ORACLE服务端使用�
 IMP只适用于EXP导出的文件，不适用于EXPDP导出文件；IMPDP只适用于EXPDP导出的文件，而不适用于EXP导出文件。
 expdp或impdp命令时，可暂不指出用户名/密码@实例名 as 身份，然后根据提示再输入，如：
 expdp schemas=scott dumpfile=expdp.dmp DIRECTORY=dpdata1;
+导入导出时会有日志文件，在创建的目录下。
 
 
 导出数据
@@ -53,3 +54,37 @@ impdp system/manager DIRECTORY=dpdata1 DUMPFILE=expdp.dmp SCHEMAS=system TABLE_E
 可以指定通配符作为文件名，而不是显式地输入各个文件名，例如： 
 expdp ananda/abc123 tables=CASES directory=DPDATA1 dumpfile=expCASES_%U.dmp parallel=4 job_name=Cases_Export 
 --dumpfile 参数拥有一个通配符 %U，它指示文件将按需要创建，格式将为expCASES_nn.dmp，其中nn 从 01 开始，然后按需要向上增加。 
+
+
+FAQ：
+1.impdp导入 ORA-39171 ORA-01691错误  
+ORA-39171: Job is experiencing a resumable wait. string
+   Cause: The Data Pump job is stalled with one or more of its sessions having a resumable wait. Resumable waits are typically caused by a non-expandable tablespace running out of space. The follow-on message describes the nature of the wait.
+   Action: Correct the condition causing the wait. This will typically involve adding datafiles to the tablespace that is full.
+ORA-01691: unable to extend lob segment string.string by string in tablespace string
+   Cause: Failed to allocate an extent of the required number of blocks for LOB segment in the tablespace indicated.
+   Action: Use ALTER TABLESPACE ADD DATAFILE statement to add one or more files to the tablespace indicated.
+
+解决办法：
+ alter tablespace CHNL_DATA add datafile '/u01/app/oracle/oradata/ora11g/chnldb02.dbf' SIZE 1073741824;
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
