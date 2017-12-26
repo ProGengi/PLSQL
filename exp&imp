@@ -15,38 +15,38 @@ expdp schemas=scott dumpfile=expdp.dmp DIRECTORY=dpdata1;
 
 导出数据
 1.创建目录指针
-create directory dpdata1 as '/test/dump';
+create directory dpdata as '/test/dump';
 2.给目录赋权
-grant read,write on directory dpdata1 to scott;
+grant read,write on directory dpdata to public;
 3.创建目录
 mkdir /test/dump
 
 1)按用户导
-expdp scott/tiger@orcl schemas=scott dumpfile=expdp.dmp DIRECTORY=dpdata1;
+expdp scott/tiger@orcl schemas=scott dumpfile=expdp.dmp DIRECTORY=dpdata;
 2)并行进程parallel
 expdp scott/tiger@orcl directory=dpdata1 dumpfile=scott3.dmp parallel=40 job_name=scott3
 3)按表名导
-expdp scott/tiger@orcl TABLES=emp,dept dumpfile=expdp.dmp DIRECTORY=dpdata1;
+expdp scott/tiger@orcl TABLES=emp,dept dumpfile=expdp.dmp DIRECTORY=dpdata;
 4)按查询条件导
-expdp scott/tiger@orcl directory=dpdata1 dumpfile=expdp.dmp Tables=emp query='WHERE deptno=20';
+expdp scott/tiger@orcl directory=dpdata dumpfile=expdp.dmp Tables=emp query='WHERE deptno=20';
 5)按表空间导
-expdp system/manager DIRECTORY=dpdata1 DUMPFILE=tablespace.dmp TABLESPACES=temp,example;
+expdp system/manager DIRECTORY=dpdata DUMPFILE=tablespace.dmp TABLESPACES=temp,example;
 6)导整个数据库
-expdp system/manager DIRECTORY=dpdata1 DUMPFILE=full.dmp FULL=y;
+expdp system/manager DIRECTORY=dpdata DUMPFILE=full.dmp FULL=y;
 
 
 还原数据
-如果是导入到另一个库，需要在所导入的库上建目录
+如果是导入到另一个库，需要在所导入的库上建目录，按表空间导入时，需要建表空间。
 1)导到指定用户下
-impdp scott/tiger DIRECTORY=dpdata1 DUMPFILE=expdp.dmp SCHEMAS=scott;
+impdp scott/tiger DIRECTORY=dpdata DUMPFILE=expdp.dmp SCHEMAS=scott;
 2)改变表的owner
-impdp system/manager DIRECTORY=dpdata1 DUMPFILE=expdp.dmp TABLES=scott.dept REMAP_SCHEMA=scott:system;
+impdp system/manager DIRECTORY=dpdata DUMPFILE=expdp.dmp TABLES=scott.dept REMAP_SCHEMA=scott:system;
 3)导入表空间
-impdp system/manager DIRECTORY=dpdata1 DUMPFILE=tablespace.dmp TABLESPACES=example;
+impdp system/manager DIRECTORY=dpdata DUMPFILE=tablespace.dmp TABLESPACES=example;
 4)导入数据库
 impdb system/manager DIRECTORY=dump_dir DUMPFILE=full.dmp FULL=y;
 5)追加数据
-impdp system/manager DIRECTORY=dpdata1 DUMPFILE=expdp.dmp SCHEMAS=system TABLE_EXISTS_ACTION
+impdp system/manager DIRECTORY=dpdata DUMPFILE=expdp.dmp SCHEMAS=system TABLE_EXISTS_ACTION
 
 并行操作(PARALLEL) 
 您可以通过 PARALLEL 参数为导出使用一个以上的线程来显著地加速作业。
