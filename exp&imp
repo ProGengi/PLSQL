@@ -13,6 +13,10 @@ expdp schemas=scott dumpfile=expdp.dmp DIRECTORY=dpdata1;
 导入导出时会有日志文件，在创建的目录下。
 
 
+
+查看当前的目录
+select * from dba_directories; 
+
 导出数据
 1.创建目录指针
 create directory dpdata as '/test/dump';
