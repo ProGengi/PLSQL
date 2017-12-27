@@ -59,6 +59,36 @@ impdp system/manager DIRECTORY=dpdata DUMPFILE=expdp.dmp SCHEMAS=system TABLE_EX
 expdp ananda/abc123 tables=CASES directory=DPDATA1 dumpfile=expCASES_%U.dmp parallel=4 job_name=Cases_Export 
 --dumpfile 参数拥有一个通配符 %U，它指示文件将按需要创建，格式将为expCASES_nn.dmp，其中nn 从 01 开始，然后按需要向上增加。 
 
+----------------------------------------------------------------------------------------------------------------------------------
+example：将16.16.1.240中zylife用户的数据导入183.66.65.209下。
+
+1.查看zylife在16.16.1.240上的表空间的创建语句。
+--set long 2000 //显示更多的文本
+SELECT DBMS_METADATA.GET_DDL('TABLESPACE', TS.tablespace_name)  FROM DBA_TABLESPACES TS; 
+在183.66.65.209上创建表空间
+
+2.--查看用户创建时的ddl语句
+ select dbms_metadata.get_ddl('USER','CHANNEL') from  dual;
+ select dbms_metadata.get_granted_ddl('OBJECT_GRANT','CHANNEL') from   dual;
+ select dbms_metadata.get_granted_ddl('ROLE_GRANT','CHANNEL') from   dual;
+ select dbms_metadata.get_granted_ddl('SYSTEM_GRANT','CHANNEL') from   dual;  
+创建用户
+
+创建目录(两边都需要创建)
+1.创建目录指针
+create directory dpdata as '/test/dump';
+2.给目录赋权
+grant read,write on directory dpdata to public;
+3.创建目录
+mkdir /test/dump
+
+导出16.16.1.240
+expdp zylife/zylife schemas=zylife dumpfile=zylife.dmp DIRECTORY=dpdata;
+
+导入183.66.65.209
+impdp zylife/zylife DIRECTORY=dpdata DUMPFILE=zyliife.dmp SCHEMAS=zylife;
+
+--------------------------------------------------------------------------------------------------------------------------------------
 
 FAQ：
 1.impdp导入 ORA-39171 ORA-01691错误  
@@ -72,8 +102,17 @@ ORA-01691: unable to extend lob segment string.string by string in tablespace st
 解决办法：
  alter tablespace CHNL_DATA add datafile '/u01/app/oracle/oradata/ora11g/chnldb02.dbf' SIZE 1073741824;
  
- 
+ 2.impdp导入 ORA-39083 ORA-14102错误 这个错误是oracle11g的bug需要打补丁。
+ORA-39083: Object type string failed to create with error: string Failing sql is: string
+   Cause: Examine original error code to determine actual cause
+   Action: Original error code will contain more information
+ORA-14102: only one LOGGING or NOLOGGING clause may be specified
+   Cause: LOGGING was specified more than once, NOLOGGING was specified more than once, or both LOGGING and NOLOGGING were specified.
+   Action: Remove all but one of the LOGGING or NOLOGGING clauses and reissue the statement. 
 
+解决办法：
+一、将报错的sql复制下来，把语句中含有 NOLOGGING 和 LOGGING 的关键词删掉，然后执行就能通过。（如果空表多，处理起来比较麻烦）
+二、安装补丁：8795792补丁
 
 
 
