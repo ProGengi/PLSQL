@@ -23,10 +23,25 @@ consistent gets/返回行数
 1.解释计划
 explain plan for
  select * from emp; --该语句执行晚之后，解释计划会被保存到plan_table中，使用dbms_xplan.display展示
- 
 select * from table(dbms_xplan.display); 
 解释计划是数据库预期的执行计划，并不是实际的，因为他还没执行。
 
-2.set autotrace traceonly explain
+set autotrace traceonly explain
   select * form emp;
+同样是预期执行计划。
+
+可能导致解释计划与执行计划不相同的三种情况：
+1.解释计划是基于你使用它的时候的环境来生成的。
+2.解释计划不考虑绑定变量的数据类型(绑定变量的数据类型都是varchar2)
+3.解释计划不'窥探'绑定变量的值。
+
+怎么看执行计划：
+  缩进最多的行是执行过程中最先执行的,缩进相同则自上而下。
+  每一个跟谓语相关的访问id列都有星号。
+  
+  
+  
+  
+  
+  
 
