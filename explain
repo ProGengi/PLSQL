@@ -19,3 +19,14 @@ consistent gets/返回行数
 避免对列进行运算
 消除隐式转换
 隐式提交,DDL语句第一是commit然后才是DDL语句。
+
+1.解释计划
+explain plan for
+ select * from emp; --该语句执行晚之后，解释计划会被保存到plan_table中，使用dbms_xplan.display展示
+ 
+select * from table(dbms_xplan.display); 
+解释计划是数据库预期的执行计划，并不是实际的，因为他还没执行。
+
+2.set autotrace traceonly explain
+  select * form emp;
+
