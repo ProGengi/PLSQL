@@ -35,6 +35,22 @@ set autotrace traceonly explain
 2.解释计划不考虑绑定变量的数据类型(绑定变量的数据类型都是varchar2)
 3.解释计划不'窥探'绑定变量的值。
 
+查看最近生成sql语句：
+  select * from v$sql;
+
+查看执行计划：
+ set serveroutput off
+ select * from table(dbms_xplan.display_cursor(null,null,'ALLSTATS LAST'));
+ dbms_xplan.display_cursor调用格式：
+  (sql_id varchar2,cursor_child_no number(38),format varchar2 )
+
+查看之前的执行过的SQL语句的执行计划:
+ select sql_id from v$sql where sql_text like '% from ...%';
+ select * from table(dbms_xplan.display_cursor(sql_id,null,'ALLSTATS LAST'));
+ 
+ 
+
+
 怎么看执行计划：
   缩进最多的行是执行过程中最先执行的,缩进相同则自上而下。
   每一个跟谓语相关的访问id列都有星号。
