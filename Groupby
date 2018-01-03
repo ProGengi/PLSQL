@@ -4,6 +4,13 @@
 #
 #
 
+group by
+select count(*) cnt,deptno from emp
+group by deptno
+having count(*)>3, --使用hanvingg过滤时不可使用别名
+deptno = 10 --这也可以放在where条件中
+
+
 rollup
  分组结果与顺序有关，顺序不同，结果不同。
  select ..
