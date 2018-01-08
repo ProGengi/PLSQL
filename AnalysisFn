@@ -120,4 +120,4 @@ id   value
 select max(id),min(value),max(value)
 from t
 group by value-rownum
---使用这种方法时，表中的数据一定是要有序的，按照id，value排序
+--使用这种方法时，数据一定是要有序的，按照id，value排序
