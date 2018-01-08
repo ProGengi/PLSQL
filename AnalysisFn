@@ -30,20 +30,74 @@ analytic_clause用来确定分析函数的操作规则，如
     
 
 max/min 在一个组中的数据窗口中查找表达式的最大/小值 
-avg 
-sum 
+avg  累计平均值
+sum  累计值！！！！！！！！！ 
 count
+
+语法例子：
+select max(sal)over(partition by deptno order by empno) from emp;
 
 rank 排序相同名次，有跳号 1224
 dense_rank 相同名次无跳号 1223
 row_number 相同名次依次排 1234
 
+select row_number()over(partition by deptno order by empno) rn from emp;
+
 first 从dense_rank中返回最前面的行
-first_value 返回数据窗口中第一个值
+first_value 返回数据窗口中第一个值,作用可与min相同
 last 从dense_rank中返回最后面值的行
-last_value 返回数据窗口中最后一个值
-lag 返回当前行之前的行
-lead 返回当前行之后的行
+last_value 返回数据窗口中最后一个值,作用可与max相同
+
+lag/lead 返回当前行之前/后的行
+lag(name) = lag(name,1,null) = lag(name,1)
+SQL> select *  from kkk;                                          
+                                                                  
+        ID NAME                                                   
+---------- --------------------                                   
+         1 1name                                                  
+         2 2name                                                  
+         3 3name                                                  
+         4 4name                                                  
+         5 5name                                                  
+SQL> select id,name,lag(name,1,0) over(order by id) from kkk; 
+                                                                  
+        ID NAME                 LAG(NAME,1,0)OVER(ORDERBYID)      
+---------- -------------------- ----------------------------      
+         1 1name                0                                 
+         2 2name                1name                             
+         3 3name                2name                             
+         4 4name                3name                             
+         5 5name                4name
+
+SQL> select id,name,lead(name,1,0) over(order by id) from kkk;
+                                                                  
+        ID NAME                 LEAD(NAME,1,0)OVER(ORDERBYID)     
+---------- -------------------- -----------------------------     
+         1 1name                2name                             
+         2 2name                3name                             
+         3 3name                4name                             
+         4 4name                5name                             
+         5 5name                0
+
+SQL> select id,name,lead(name,2,0) over(order by id) from kkk;                                                                                                               
+        ID NAME                 LEAD(NAME,2,0)OVER(ORDERBYID)     
+---------- -------------------- -----------------------------     
+         1 1name                3name                             
+         2 2name                4name                             
+         3 3name                5name                             
+         4 4name                0                                 
+         5 5name                0  
+SQL> select id,name,lead(name,1,'linjiqin') over(order by id) from kkk;                                  
+                                                                                  
+        ID NAME                 LEAD(NAME,1,'ALSDFJLASDJFSAF')                    
+---------- -------------------- ------------------------------                    
+         1 1name                2name                                             
+         2 2name                3name                                             
+         3 3name                4name                                             
+         4 4name                5name                                             
+         5 5name                linjiqin  
+
+
 
 连续号码段的问题
 id   value
