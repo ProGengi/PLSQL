@@ -19,3 +19,7 @@ as
  select empno,ename,job from t ,emp e  where e.empno=t.empno
 )
 select * from t;
+
+
+
+
