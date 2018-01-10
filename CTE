@@ -4,13 +4,29 @@
 #
 #
 
+--公用表表达式(cte)
+with tt as (select * from emp)
+select * from tt;
+注意事项：
+cte之后必须紧跟使用cte的SQL语句(select,insert,update),否则cte将失效。
+cte之后可跟多个cte，使用逗号隔开。
+如果cte表达式的名称与表或视图的名称相同，使用时，仍然使用的是cte。
+cte可以引用自身。
+
+select * from emp where empname in (select deptno from dept where deptname = 'LOS');
+改写成：
+with tt as 
+(select deptno from dept where deptname = 'Los')
+select * from emp where empno in (select * from tt)
+
+
+
+
 递归with查询语法
 with 
 query_name --子查询的名称，必须把所有列都写出来
 as (subquery) --该部分就是查询语句，递归就写在这里。
 select * from ..
-
-
 
 with t(empno,ename,job)
 as
