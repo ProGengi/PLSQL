@@ -55,3 +55,4 @@ start with manager_id is null
 connect by prior employee_id=manager_id; 
 connect 逻辑读比with小，性能好，但是connect不是ansi sql。
 
+http://www.itpub.net/thread-1376651-1-1.html
