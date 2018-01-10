@@ -37,5 +37,21 @@ as
 select * from t;
 
 
-
+--列子
+with emps (employee_id, name, job_id, salary, lvl) as (  
+  select employee_id, first_name || ', '|| last_name name, job_id, salary, 1 as lvl  
+  from employees  
+  where manager_id is null  
+  union all  
+  select emp.employee_id, emp.first_name || ', '|| emp.last_name, emp.job_id, emp.salary, root.lvl + 1  
+  from employees emp, emps root  
+  where emp.manager_id=root.employee_id  
+)  
+select * from emps;
+--等同于
+select emp.employee_id, emp.first_name || ', '|| emp.last_name name, emp.job_id, emp.salary, level  
+from employees emp  
+start with manager_id is null  
+connect by prior employee_id=manager_id; 
+connect 逻辑读比with小，性能好，但是connect不是ansi sql。
 
