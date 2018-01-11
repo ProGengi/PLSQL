@@ -53,6 +53,11 @@ select emp.employee_id, emp.first_name || ', '|| emp.last_name name, emp.job_id,
 from employees emp  
 start with manager_id is null  
 connect by prior employee_id=manager_id; 
+
+
+关于connect by
+当使用connect by 有where条件时，where条件的作用在connect by 之后过滤。start with指定树的根。
+
 connect 逻辑读比with小，性能好，但是connect不是ansi sql。
 
 http://www.itpub.net/thread-1376651-1-1.html
