@@ -21,43 +21,73 @@ select * from emp where empno in (select * from tt)
 
 
 
+with递归语法：
+WITH 
+1  query_name ([c_alias [, c_alias]...]) --这是子查询的名称，必须在括号中把这个子查询的所有列名写出来。
+2  AS (subquery) 
+--AS后面的subquery就是查询语句，递归部分就写在这里。subquery部分由两个成员组成：anchor member(锚点成员) 和 recursive member(递归成员)。
+  它们之间必须用union all联合起来，anchor member 必须写在recursive member前面。
+  anchor member用来定位递归的入口，锚点成员是一个SELECT语句，它不可以包含自身名称(query_name)。
+  这相当于CONNECT BY查询中的START WITH，典型写法就是:
+  SELECT ... FROM 要遍历的表 WHERE ... (起始条件)
+3  [search_clause] --遍历顺序子句，可以指定深度优先或广度优先遍历顺序。
+4  [cycle_clause] --循环子句，用于中止遍历中出现的死循环。
+5  [,query_name ([c_alias [, c_alias]...]) AS (subquery) [search_clause] [cycle_clause]]...  --如果还有其他递归子查询，定义同上。
 
-递归with查询语法
-with 
-query_name --子查询的名称，必须把所有列都写出来
-as (subquery) --该部分就是查询语句，递归就写在这里。
-select * from ..
 
-with t(empno,ename,job)
-as
-(select empno,ename,job from emp
- union all
- select empno,ename,job from t ,emp e  where e.empno=t.empno
-)
-select * from t;
 
 
 --列子
-with emps (employee_id, name, job_id, salary, lvl) as (  
-  select employee_id, first_name || ', '|| last_name name, job_id, salary, 1 as lvl  
-  from employees  
-  where manager_id is null  
+with emps (empno, ename)  
+as (  
+  select empno, ename 
+  from emp  
+  where mgr is null  
   union all  
-  select emp.employee_id, emp.first_name || ', '|| emp.last_name, emp.job_id, emp.salary, root.lvl + 1  
-  from employees emp, emps root  
-  where emp.manager_id=root.employee_id  
+  select emp.empno,emps.ename||'/'||emp.ename   
+  from emp, emps 
+  where emp.mgr=emps.empno 
 )  
 select * from emps;
---等同于
-select emp.employee_id, emp.first_name || ', '|| emp.last_name name, emp.job_id, emp.salary, level  
-from employees emp  
-start with manager_id is null  
-connect by prior employee_id=manager_id; 
 
+     EMPNO ENAME
+---------- ----------------------------------------------------------------
+      7839 KING
+      7566 KING/JONES
+      7698 KING/BLAKE
+      7782 KING/CLARK
+      7499 KING/BLAKE/ALLEN
+      7521 KING/BLAKE/WARD
+      7654 KING/BLAKE/MARTIN
+      7788 KING/JONES/SCOTT
+      7844 KING/BLAKE/TURNER
+      7900 KING/BLAKE/JAMES
+      7902 KING/JONES/FORD
+      7934 KING/CLARK/MILLER
+      7369 KING/JONES/FORD/SMITH
+      7876 KING/JONES/SCOTT/ADAMS
+      
+--等同于
+select empno,sys_connect_by_path(ename,'/') p_name from emp start with mgr is null connect by prior empno = mgr; 
+     EMPNO P_NAME
+---------- ------------------------------------------------------------
+      7839 /KING
+      7566 /KING/JONES
+      7788 /KING/JONES/SCOTT
+      7876 /KING/JONES/SCOTT/ADAMS
+      7902 /KING/JONES/FORD
+      7369 /KING/JONES/FORD/SMITH
+      7698 /KING/BLAKE
+      7499 /KING/BLAKE/ALLEN
+      7521 /KING/BLAKE/WARD
+      7654 /KING/BLAKE/MARTIN
+      7844 /KING/BLAKE/TURNER
+      7900 /KING/BLAKE/JAMES
+      7782 /KING/CLARK
+      7934 /KING/CLARK/MILLER
 
 关于connect by
 当使用connect by 有where条件时，where条件的作用在connect by 之后过滤。start with指定树的根。
-
 connect 逻辑读比with小，性能好，但是connect不是ansi sql。
 
 http://www.itpub.net/thread-1376651-1-1.html
