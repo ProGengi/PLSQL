@@ -112,4 +112,12 @@ with t (tid,trn) as
          9         18
         10         20
 
+斐波那契数列：
+with t (id,last_t,t)
+as
+(select 1,1,1 from dual
+ union all
+ select id+1,t,last_t+t from t where t.id<10)
+select * from t ;
 
+http://www.jb51.net/article/105760.htm
