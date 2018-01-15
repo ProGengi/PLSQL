@@ -30,3 +30,39 @@ set t2.name=t1.name
 delete where T1.ID=xxxx --只会删除t1表中的数据
 
 
+insert
+ oracle有两种插入方法：快速跟慢速，普通插入的就是慢速插入。
+ 快速插入是指，直接从高水位线往后插入，而不必查找已有块中是否有空余的空间。
+ insert /*+ append */ into emp select * from emp3;
+ insert /*+ append_values */ into dual(dummy) values('Y'); --插入单个值时使用append_values，快速插入永远是为了插入大量的数据而使用的
+ 
+ 快速插入的问题：
+  1.在任何时间内，一张表只能有一个直接路径写入。
+  2.数据只能在高水位线之上，这会导致空间浪费。
+  3.在开始之后进行插入的会话不能对表进行任何操作(包括select)，知道提交或者回滚。
+  
+ 多表插入：
+  insert all
+   into emp1(....)
+    values (...)
+   into emp2(...)
+    values(...)
+   select ... from emp;
+ 条件插入：
+  insert all
+   when 1=1 then 
+   into emp1(...) values(....)
+   when id is not null then 
+   into emp2(...) values(....)
+  select * from emp;
+ 
+ update
+  一张表里的大量数据时可以使用create table as (CTAS)代替。
+  
+ delete
+  大量删除，也可以使用CTAS。
+  truncate，是一条ddl语句，会隐式提交，一旦截断就不能还原了。不能闪回到表截断之前的状态。一张表只能全部截断或者不截断。
+  
+  
+  
+  
