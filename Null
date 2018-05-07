@@ -38,11 +38,13 @@ decode(expr1,expr2,expr3,
  如果都不相等，返回expr6.
  
 null与索引
+ balance tree索引是不存储null的。
+
 
 null的排序(null是最大的)
  升序时，null在最后
  降序时，null在最前
- 
+ 指定null： orderby  ... NULLS FIRST/LAST 
  
  
 
