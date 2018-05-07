@@ -16,7 +16,8 @@ WHEN NOT MATCHED THEN
 INSERT;
 
 FAQ
-Q:无法在源表获得一组稳定的行(on 后面的条件出现满足多个结果的情况)用A表去更新B表，但是A表却有多行结果。如果目标表出现多行不会报错但是全部新。
+Q:无法在源表获得一组稳定的行(on 后面的条件出现满足多个结果的情况)用A表去更新B表，但是A表却有多行结果。
+  如果目标表出现多行不会报错但是全部新。如果原表出现多行能够匹配上，会出现ORA-30926错误。
 A:用主键关联。
 
 DELETE子句只能删除目标表，不能删除源表。
@@ -28,6 +29,36 @@ when matched then
 update 
 set t2.name=t1.name
 delete where T1.ID=xxxx --只会删除t1表中的数据
+
+*****************************************
+T表中的数据：
+id    value
+1       a
+2       b
+
+用一条sql把两个值交换一下：
+merge into t
+using (
+select 1 id,(select value from t where id =2) as value from dual
+union all
+select 2,(select value from t where id =1) from dual
+) s
+on (t.id=s.id)
+when matched then 
+update
+set t.value=s.value;
+
+
+
+查询：
+with t as
+(
+select 1 id,(select value from t where id =2) as value from dual
+union all
+select 2,(select value from t where id =1) from dual
+)
+select * from t;
+******************************************
 
 
 insert
