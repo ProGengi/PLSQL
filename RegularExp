@@ -83,6 +83,12 @@ select regexp_substr('123456789','\d',1,level) str  --取出每位数字，有�
 from dual
 connect by level<=9;
 
+'A,B,C,D,E'拆成每个字母一行
+select regexp_substr('A,B,C,D','[^,]+',1,LEVEL) --[^,]
+FROM DUAL
+CONNECT BY LEVEL <= length('A,B,C,D')- length(regexp_replace('A,B,C,D',',',''))+1
+
+
 select
   str, 
   regexp_instr(str,'\.'    ) ind ,
