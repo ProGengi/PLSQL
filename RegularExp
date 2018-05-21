@@ -88,6 +88,20 @@ select regexp_substr('A,B,C,D','[^,]+',1,LEVEL) --[^,]
 FROM DUAL
 CONNECT BY LEVEL <= length('A,B,C,D')- length(regexp_replace('A,B,C,D',',',''))+1
 
+用pl/sql的方式实现：
+ 创建嵌套表：
+craete or replace type varchar2_tt as table of varchar2(1000);
+
+create or replace function f_split_string(in_str varchar2, delimiter varchar2) 
+return varchar2_tt
+is 
+
+begin 
+ 
+
+
+end 
+
 
 select
   str, 
