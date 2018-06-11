@@ -13,7 +13,7 @@ analytic_clause用来确定分析函数的操作规则，如
   query_partition_clasue 可以看做group by
   order_by_clause 可以看做order by
   windowing_clause数据记录集窗口范围，必须依赖于order_by_clause而存在。
-    rows 指定物理行/range 指定窗口由偏移量构成
+    rows 指定物理行,通过自身位置来找到相应的行 /range 指定窗口由偏移量构成，通过某种条件来寻找行。
     between  and 用来指定窗口的起始点和终点
     unbounded preceding 指明窗口的起始点是分组的第一行
     current row 作为起始点，窗口的开始于当前行，作为终点，窗口结束于当前行
@@ -121,3 +121,69 @@ select max(id),min(value),max(value)
 from t
 group by value-rownum
 --使用这种方法时，数据一定是要有序的，按照id，value排序
+
+列转行函数：listagg：
+with temp as(    
+select 'China' nation ,'Guangzhou' city from dual union all    
+select 'China' nation ,'Shanghai' city from dual union all    
+select 'China' nation ,'Beijing' city from dual union all    
+select 'USA' nation ,'New York' city from dual union all    
+select 'USA' nation ,'Bostom' city from dual union all    
+select 'Japan' nation ,'Tokyo' city from dual     
+)    
+select nation,listagg(city,',') within GROUP (order by city)  as Cities  
+from temp    
+group by nation 
+
+result：
+nation   city
+china    Guangzhou,Shanghai,Beijing
+USA      NewYork,Bostom
+Japan    Tokyo
+
+select nation,wm_concat(city) city from temp group by nation;同样可以达到上面的效果
+--------------------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------------------
+分析函数中，加order by与不加的区别
+select ename,deptno,  
+wm_concat(ename) over (partition by deptno) emp_list  
+from emp;  
+  
+ENAME          DEPTNO EMP_LIST  
+---------- ---------- ----------------------------------------  
+CLARK              10 CLARK,KING,MILLER  
+KING               10 CLARK,KING,MILLER  
+MILLER             10 CLARK,KING,MILLER  
+JONES              20 JONES,FORD,ADAMS,SMITH,SCOTT  
+FORD               20 JONES,FORD,ADAMS,SMITH,SCOTT  
+ADAMS              20 JONES,FORD,ADAMS,SMITH,SCOTT  
+SMITH              20 JONES,FORD,ADAMS,SMITH,SCOTT  
+SCOTT              20 JONES,FORD,ADAMS,SMITH,SCOTT  
+WARD               30 WARD,TURNER,ALLEN,JAMES,BLAKE,MARTIN  
+TURNER             30 WARD,TURNER,ALLEN,JAMES,BLAKE,MARTIN  
+ALLEN              30 WARD,TURNER,ALLEN,JAMES,BLAKE,MARTIN  
+JAMES              30 WARD,TURNER,ALLEN,JAMES,BLAKE,MARTIN  
+BLAKE              30 WARD,TURNER,ALLEN,JAMES,BLAKE,MARTIN  
+MARTIN             30 WARD,TURNER,ALLEN,JAMES,BLAKE,MARTIN  
+
+select ename,deptno,  
+wm_concat(ename) over (partition by deptno order by ename) emp_list  
+from emp;  
+  
+ENAME          DEPTNO EMP_LIST  
+---------- ---------- ----------------------------------------  
+CLARK              10 CLARK  
+KING               10 CLARK,KING  
+MILLER             10 CLARK,KING,MILLER  
+ADAMS              20 ADAMS  
+FORD               20 ADAMS,FORD  
+JONES              20 ADAMS,FORD,JONES  
+SCOTT              20 ADAMS,FORD,JONES,SCOTT  
+SMITH              20 ADAMS,FORD,JONES,SCOTT,SMITH  
+ALLEN              30 ALLEN  
+BLAKE              30 ALLEN,BLAKE  
+JAMES              30 ALLEN,BLAKE,JAMES  
+MARTIN             30 ALLEN,BLAKE,JAMES,MARTIN  
+TURNER             30 ALLEN,BLAKE,JAMES,MARTIN,TURNER  
+WARD               30 ALLEN,BLAKE,JAMES,MARTIN,TURNER,WARD  
