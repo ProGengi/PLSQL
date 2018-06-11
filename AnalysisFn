@@ -145,7 +145,7 @@ select nation,wm_concat(city) city from temp group by nation;同样可以达到�
 --------------------------------------------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------------------------------------------
-分析函数中，加order by与不加的区别
+分析函数中，加order by与不加的区别，加order by 会自动添加一个窗口，RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW 即从窗口的第一行到当前行。
 select ename,deptno,  
 wm_concat(ename) over (partition by deptno) emp_list  
 from emp;  
