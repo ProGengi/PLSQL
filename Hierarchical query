@@ -6,9 +6,10 @@
 
 层次查询，每个节点有且仅有一个父节点，但可以有任意子节点。
 select ..
+where   --where 条件是在遍历结束之后才起作用。
 start with ..  --可选项，用来标识查询时的根节点
 connect by ..  --说明每行数据都将按层次检索
-piror  --所在的一侧表示父节点
+piror  --所在的一侧表示父节点，也是像所在的方向查找。
 
 sys_connect_by_path函数 用第二个参数连接从根遍历的结果。
 select sys_connect_by_path(empid,'->') fromat
