@@ -9,13 +9,33 @@ select ..
 where   --where 条件是在遍历结束之后才起作用。
 start with ..  --可选项，用来标识查询时的根节点
 connect by ..  --说明每行数据都将按层次检索
+nocycle --上下级关系可能出现嵌套， connect by nocycle piror 则可以消除嵌套。
 piror  --所在的一侧表示父节点，也是像所在的方向查找。
 
+connect_by_isleaf --是否叶子节点，是值为1，不是为0
+connect_by_root   --
+
 sys_connect_by_path函数 用第二个参数连接从根遍历的结果。
-select sys_connect_by_path(empid,'->') fromat
+select sys_connect_by_path(empno,'->') fromat
 from emp
-start wtih empid=100
-connect by piror empid=managerid
+start wtih empno=7839
+connect by piror empno = mgr;
+
+->7839
+->7839->7566
+->7839->7566->7788
+->7839->7566->7788->7876
+->7839->7566->7902
+->7839->7566->7902->7369
+->7839->7698
+->7839->7698->7499
+->7839->7698->7521
+->7839->7698->7654
+->7839->7698->7844
+->7839->7698->7900
+->7839->7782
+->7839->7782->7934
+---------------------------------------------------------------------------------------------
 
 wmsys.wm_concat 这个函数没有被公开，在以后的版本中可能不可以用了。
 这是一个聚合函数，用来将满足条件的值以逗号分隔开的方式串联起来。
