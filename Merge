@@ -12,8 +12,11 @@ USING TABLE_NAME2
 ON TABLE.ID=TABLE2.ID
 WHEN MATCHED THEN
 UPDATE/DELETE
+set a.col=b.col,...
 WHEN NOT MATCHED THEN
-INSERT;
+INSERT
+(....)
+values(....);
 
 FAQ
 Q:无法在源表获得一组稳定的行(on 后面的条件出现满足多个结果的情况)用A表去更新B表，但是A表却有多行结果。
