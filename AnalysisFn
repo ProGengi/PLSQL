@@ -39,7 +39,7 @@ select max(sal)over(partition by deptno order by empno) from emp;
 
 rank 排序相同名次，有跳号 1224
 dense_rank 相同名次无跳号 1223
-row_number 相同名次依次排 1234
+row_number 相同名次依次排 1234 (相同名次是随机排的)
 
 select row_number()over(partition by deptno order by empno) rn from emp;
 
