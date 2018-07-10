@@ -10,7 +10,7 @@ where   --where 条件是在遍历结束之后才起作用。
 start with ..  --可选项，用来标识查询时的根节点
 connect by ..  --说明每行数据都将按层次检索
 nocycle --上下级关系可能出现嵌套， connect by nocycle piror 则可以消除嵌套。
-piror  --所在的一侧表示父节点，也是像所在的方向查找。
+piror  --所在的一侧表示子节点，也是向所在的方向查找。
 
 connect_by_isleaf --是否叶子节点，是值为1，不是为0
 connect_by_root   --
