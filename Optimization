@@ -1,0 +1,50 @@
+#
+#
+#
+#
+#
+
+1.forall
+  --该语句会从pl/sql引擎发送到sql引擎10次，会发生10次上下文切换。
+  for i in 1..10 loop
+   insert into test
+   values(..)
+  end lopp; 
+
+  --改成forall就只会产生一次上下文切换
+  forall i in 1..10 loop
+    insert into test
+    values(..)
+  end loop;
+  
+2.bulk collect
+  declare 
+   cursor student_cur is select first_name,last_name from student;
+  begin 
+   for rec in student_cur loop
+     ...
+   end loop;
+  end;
+  
+  select ...
+  bulk collect into 
+  ... --集合变量
+  from ..
+   
+ 
+绑定变量
+比较适用于OLTP，OLTP系统的特性是SQL执行特别频繁，时间短。
+一条sql执行前的处理过程：
+1.语法检查
+2.语义检查(权限，是否存在)
+3.sql解析 (生成解析树，执行计划)
+4.执行sql
+
+
+硬解析：如果在共享池里没找到要执行的sql就要进行硬解析
+软解析：存在hash值，则将直接用对应的执行计划
+
+如果不用绑定变量循环多少次就会解析多少次，用了绑定变量，就解析一次，就会省下很多解析的时间。
+'select * from emp where empno= :X' using v_empno;
+
+
