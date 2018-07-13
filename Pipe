@@ -6,16 +6,20 @@
 
 表函数，能够产生一组输出行集合的函数。数据存放内存中。
 管道函数与表函数类似，不是一次返回所有需要的行，而是一次返回一行，尽可能的快。返回的是一个集合。
+管道函数只是表函数的一种。
+
+SQL> create or replace type num_list is table of number; --创建一个数字类型的集合。
 
 create or replace function pipe_num(p_max number)
 return num_list pipelined 
 is
 begin 
  for i in 1..p_max loop
-  pipe row(i)
+  pipe row(i);
  end loop;
-return; 
+return; --返回空的参数，说明函数已完成。
 end;
 
 select * from table(pipe_num(5));
-当管道函数中有DML时，select无法调用管道函数。
+当管道函数中有DML时，select无法调用管道函数。如果要用，可以使用自治事务来解决。--剑破冰山Oracle开发艺术
+
