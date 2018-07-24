@@ -21,3 +21,8 @@ select t.l||'-'||t2.l||'='||to_char(t.l-t2.l) from
 (select l,rownum rn from(select l from t order by dbms_random.random))t2 
 where t.rn=t2.rn and t.l-t2.l>0
 )where rownum<=250;
+
+
+update emp
+set (salary,comm) = (select salary,comm from employee where employee.id = emp.id and emp.salary <> employee.salary)
+where deptid = 30;
