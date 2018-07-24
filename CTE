@@ -38,6 +38,7 @@ WITH
 
 
 --列子
+--递归写法必须把所有列都列出来
 with emps (empno, ename)  
 as (  
   select empno, ename 
