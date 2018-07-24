@@ -43,6 +43,14 @@
 
 硬解析：如果在共享池里没找到要执行的sql就要进行硬解析
 软解析：存在hash值，则将直接用对应的执行计划
+软硬解析的区别在于：是否能够重用执行计划，硬解析需要重新生成执行计划，软解析能够重用之前的执行计划。
+生成执行计划需要访问的对象：表，索引，等59个。
+可以通过v$sql视图来查看目前共享池中的sql
+select sql_text,sql_id,child_number,hash_value,address,executions from v$sql
+where upper(sql_text) like '%EMP%';
+
+
+
 
 如果不用绑定变量循环多少次就会解析多少次，用了绑定变量，就解析一次，就会省下很多解析的时间。
 'select * from emp where empno= :X' using v_empno;
