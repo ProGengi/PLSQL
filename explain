@@ -25,7 +25,7 @@
 
 1.解释计划
 explain plan for
- select * from emp; --该语句执行晚之后，解释计划会被保存到plan_table中，使用dbms_xplan.display展示
+ select * from emp; --该语句执行晚之后，解释计划会被保存到plan_table中，使用dbms_xplan.display展示，dbms_xplan.dispay函数是查询plan_table的函数。
 select * from table(dbms_xplan.display); 
 解释计划是数据库预期的执行计划，并不是实际的，因为他还没执行。
 
